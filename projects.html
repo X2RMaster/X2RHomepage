@@ -1,0 +1,324 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X2R Projects</title>
+    <style>
+        /* =========================================
+           1. 공통 스타일
+        ========================================= */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Segoe UI", Roboto, sans-serif;
+            color: #ffffff; 
+            overflow-x: hidden; 
+            background-color: transparent; /* ✅ [중요] 배경 투명화 (영상이 보이게) */
+            line-height: 1.6;
+        }
+
+        a { text-decoration: none; color: inherit; transition: all 0.3s; }
+
+        /* =========================================
+           [수정됨] 유튜브 배경 동영상 설정
+        ========================================= */
+        .video-background {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; overflow: hidden;
+            pointer-events: none; /* 클릭 방지 */
+        }
+
+        /* 유튜브 iframe을 화면 정중앙에 꽉 차게 맞추는 코드 */
+        .video-background iframe {
+            width: 100vw;
+            height: 56.25vw; /* 16:9 비율 (가로 기준) */
+            min-height: 100vh;
+            min-width: 177.77vh; /* 16:9 비율 (세로 기준) */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8); /* 프로젝트 집중을 위해 조금 더 어둡게 유지 */
+            z-index: 0;
+        }
+
+        /* 헤더 */
+        header {
+            position: fixed; top: 0; width: 100%; z-index: 100;
+            padding: 20px 40px; display: flex; justify-content: space-between; align-items: center;
+            backdrop-filter: blur(10px); background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .logo { font-weight: 800; font-size: 1.8rem; letter-spacing: -0.5px; }
+        .logo span { color: #3b82f6; }
+        .nav-links a { margin-left: 30px; font-size: 0.95rem; font-weight: 500; color: #bbb; }
+        .nav-links a.active { color: #fff; font-weight: 700; }
+        .nav-links a:hover { color: #fff; }
+
+        /* 레이아웃 */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* 페이지 헤더 (Projects 타이틀) */
+        .page-header {
+            padding: 150px 0 80px; text-align: center;
+        }
+        .page-title {
+            font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 800; margin-bottom: 20px;
+            animation: slideUp 1s ease-out forwards;
+        }
+        .page-desc {
+            font-size: 1.2rem; color: #ccc; max-width: 700px; margin: 0 auto;
+            animation: slideUp 1s ease-out 0.2s forwards; opacity: 0;
+        }
+
+        /* =========================================
+           2. 프로젝트 카드 그리드 스타일
+        ========================================= */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); /* 반응형 그리드 */
+            gap: 40px;
+            padding-bottom: 150px;
+        }
+
+        .project-card {
+            background: rgba(255, 255, 255, 0.03); /* 유리 같은 반투명 배경 */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s;
+            backdrop-filter: blur(5px);
+        }
+
+        /* 마우스 올렸을 때 카드 효과 */
+        .project-card:hover {
+            transform: translateY(-10px); /* 위로 둥실 떠오름 */
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            border-color: rgba(59, 130, 246, 0.5); /* 파란색 테두리 */
+        }
+
+        /* [수정] 카드 이미지 영역 */
+        .card-image {
+            height: 250px; overflow: hidden; position: relative;
+            z-index: 1; /* 카테고리 태그가 위에 오도록 */
+        }
+
+        /* [추가] 이미지를 감싸는 링크 스타일 */
+        .card-image-link {
+            display: block; width: 100%; height: 100%; position: relative;
+        }
+
+        /* [수정] 이미지 스타일 */
+        .card-image img {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 0.6s, filter 0.3s;
+        }
+
+        /* [수정] 호버 시 이미지 효과 (줌인 + 어둡게) */
+        .project-card:hover .card-image img {
+            transform: scale(1.1); 
+            filter: brightness(0.7); /* 아이콘 강조를 위해 어둡게 */
+        }
+
+        /* [추가] 재생 아이콘 스타일 */
+        .play-icon {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.5); /* 처음엔 작게 */
+            font-size: 3rem; color: #fff;
+            opacity: 0; /* 숨김 */
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* 텐션 있는 등장 효과 */
+            z-index: 2; text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            pointer-events: none;
+        }
+
+        /* 마우스 올리면 아이콘 나타남 */
+        .card-image-link:hover .play-icon {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* [수정] 카테고리 태그 (왼쪽 상단) */
+        .category-tag {
+            position: absolute; top: 15px; left: 15px;
+            background: rgba(0, 0, 0, 0.7); padding: 5px 12px;
+            border-radius: 20px; font-size: 0.8rem; font-weight: 600; color: #3b82f6;
+            backdrop-filter: blur(4px);
+            z-index: 5; /* 링크보다 위에 */
+        }
+
+        /* 카드 텍스트 영역 */
+        .card-content { padding: 30px; }
+        .card-content h3 { font-size: 1.5rem; margin-bottom: 10px; font-weight: 700; }
+        .card-content p { font-size: 1rem; color: #aaa; margin-bottom: 20px; line-height: 1.5; }
+        
+        .card-link {
+            font-size: 0.9rem; font-weight: 600; color: #fff;
+            display: inline-flex; align-items: center;
+        }
+        .card-link::after {
+            content: '→'; margin-left: 8px; transition: margin-left 0.3s;
+        }
+        .project-card:hover .card-link::after { margin-left: 12px; }
+
+        /* 애니메이션 */
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .scroll-hidden { opacity: 0; transform: translateY(50px); transition: all 0.8s ease-out; }
+        .scroll-show { opacity: 1; transform: translateY(0); }
+
+        /* 모바일 대응 */
+        @media (max-width: 768px) {
+            .project-grid { grid-template-columns: 1fr; }
+            .page-title { font-size: 2.5rem; }
+        }
+        
+        footer { padding: 60px 0; text-align: center; color: #555; border-top: 1px solid rgba(255,255,255,0.1); }
+
+    </style>
+</head>
+<body>
+
+    <div class="video-background">
+        <iframe 
+            src="https://www.youtube.com/embed/mwyfdKKhhAk?autoplay=1&mute=1&controls=0&loop=1&playlist=mwyfdKKhhAk&playsinline=1" 
+            title="YouTube video player" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            style="pointer-events: none;" 
+            allowfullscreen>
+        </iframe>
+        <div class="overlay"></div>
+    </div>
+
+    <header>
+        <div class="logo">X2R <span>.</span></div>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="history.html">History</a>
+            <a href="projects.html" class="active">Projects</a> 
+        </nav>
+    </header>
+
+    <section class="container page-header">
+        <h1 class="page-title">Selected Works</h1>
+        <p class="page-desc">
+            디지털 트윈, 메타버스, VR/AR 교육 솔루션까지.<br>
+            X2R이 만들어가는 주요 프로젝트를 소개합니다.
+        </p>
+    </section>
+
+    <section class="container project-grid">
+        
+        <article class="project-card scroll-hidden">
+            <div class="card-image">
+                <span class="category-tag">Safety VR</span>
+                <a href="https://www.youtube.com/watch?v=paDIBgLjWTU" target="_blank" class="card-image-link">
+                    <img src="project1.png" alt="Safety VR">
+                    <div class="play-icon">▶</div>
+                </a>
+            </div>
+            <div class="card-content">
+                <h3>산업재해 대응 VR</h3>
+                <p>디지털 트윈 기술을 활용한 산업 현장 재난 안전 대응 콘텐츠입니다. 실제와 같은 시뮬레이션으로 안전 교육의 효율을 극대화합니다.</p>
+                <a href="https://www.youtube.com/watch?v=paDIBgLjWTU" target="_blank" class="card-link">Watch Video</a>
+            </div>
+        </article>
+
+        <article class="project-card scroll-hidden" style="transition-delay: 0.1s;">
+            <div class="card-image">
+                <span class="category-tag">Education</span>
+                <a href="https://www.youtube.com/watch?v=yshLZUrstTk&list=PLbSgudqueus7klIZeq3VLuhnaKxKyaLSF" target="_blank" class="card-image-link">
+                    <img src="project2.png" alt="Education">
+                    <div class="play-icon">▶</div>
+                </a>
+            </div>
+            <div class="card-content">
+                <h3>이차전지 제조공정 교육</h3>
+                <p>울산대학교와 협력하여 개발한 파우치셀 제조공정 VR/PC 프로그램입니다. 복잡한 공정을 가상 공간에서 안전하게 실습합니다.</p>
+                <a href="https://www.youtube.com/watch?v=yshLZUrstTk&list=PLbSgudqueus7klIZeq3VLuhnaKxKyaLSF" target="_blank" class="card-link">Watch Video</a>
+            </div>
+        </article>
+
+        <article class="project-card scroll-hidden" style="transition-delay: 0.2s;">
+            <div class="card-image">
+                <span class="category-tag">Digital Human</span>
+                <a href="https://www.youtube.com/watch?v=cNj4wOFIVQc&list=PLbSgudqueus5FiKWTSxU42hsZBxK8Ukkf&index=1" target="_blank" class="card-image-link">
+                    <img src="project3.png" alt="Digital Human">
+                    <div class="play-icon">▶</div>
+                </a>
+            </div>
+            <div class="card-content">
+                <h3>메타 휴먼 시스템</h3>
+                <p>2025년 특허 출원된 차세대 메타 휴먼 기술입니다. AI 기반의 자연스러운 움직임과 상호작용이 가능한 가상 인간을 구현합니다.</p>
+                <a href="https://www.youtube.com/watch?v=cNj4wOFIVQc&list=PLbSgudqueus5FiKWTSxU42hsZBxK8Ukkf&index=1" target="_blank" class="card-link">Watch Video</a>
+            </div>
+        </article>
+
+        <article class="project-card scroll-hidden">
+            <div class="card-image">
+                <span class="category-tag">Medical VR</span>
+                <a href="https://www.youtube.com/watch?v=BmATlQPJC34&list=PLbSgudqueus5SzWKq3xCM3uyHBe1opuvV&index=2" target="_blank" class="card-image-link">
+                    <img src="https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=1000&auto=format&fit=crop" alt="Dental Simulation">
+                    <div class="play-icon">▶</div>
+                </a>
+            </div>
+            <div class="card-content">
+                <h3>치과 방사선 촬영 시뮬레이션</h3>
+                <p>서울대학교 산학협력단과 개발한 의료 교육용 VR 콘텐츠입니다. 정밀한 조작과 360도 영상으로 실습 효과를 높입니다.</p>
+                <a href="https://www.youtube.com/watch?v=BmATlQPJC34&list=PLbSgudqueus5SzWKq3xCM3uyHBe1opuvV&index=2" target="_blank" class="card-link">Watch Video</a>
+            </div>
+        </article>
+
+        <article class="project-card scroll-hidden" style="transition-delay: 0.1s;">
+            <div class="card-image">
+                <span class="category-tag">Defense AR</span>
+                <a href="https://www.youtube.com/watch?v=VIDEO_ID_HERE" target="_blank" class="card-image-link">
+                    <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1000&auto=format&fit=crop" alt="AR Tech">
+                    <div class="play-icon">▶</div>
+                </a>
+            </div>
+            <div class="card-content">
+                <h3>국방장비 AR 솔루션</h3>
+                <p>육군본부와 협력하여 개발한 국방 장비 정비 및 교육용 증강현실(AR) 어플리케이션입니다.</p>
+                <a href="https://www.youtube.com/watch?v=VIDEO_ID_HERE" target="_blank" class="card-link">Watch Video</a>
+            </div>
+        </article>
+
+        <article class="project-card scroll-hidden" style="transition-delay: 0.2s;">
+            <div class="card-image">
+                <span class="category-tag">Exhibition</span>
+                <a href="https://www.youtube.com/watch?v=VIDEO_ID_HERE" target="_blank" class="card-image-link">
+                    <img src="https://images.unsplash.com/photo-1506784983877-45594efa4cbe?q=80&w=1000&auto=format&fit=crop" alt="Metaverse Exhibition">
+                    <div class="play-icon">▶</div>
+                </a>
+            </div>
+            <div class="card-content">
+                <h3>가상 미술 전시 플랫폼</h3>
+                <p>비대면 시대의 새로운 문화 경험을 위한 MR 미술 전시 솔루션입니다. 큐레이팅 서비스와 결합된 몰입형 관람을 제공합니다.</p>
+                <a href="https://www.youtube.com/watch?v=VIDEO_ID_HERE" target="_blank" class="card-link">Watch Video</a>
+            </div>
+        </article>
+
+    </section>
+
+    <footer>
+        <p>© 2025 X2R Corp. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.classList.add('scroll-show');
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.scroll-hidden').forEach((el) => observer.observe(el));
+    </script>
+
+</body>
+</html>
