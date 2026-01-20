@@ -72,8 +72,21 @@
             background: rgba(0,0,0,0.3);
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
-        .logo { font-weight: 800; font-size: 1.8rem; letter-spacing: -0.5px; }
-        .logo span { color: #3b82f6; } 
+       .logo {
+    display: flex;
+    align-items: center;
+    /* 로고 영역의 최대 너비 제한 (필요하면 조절하세요) */
+    max-width: 150px; 
+    height: auto;
+}
+
+.logo img {
+    /* 이미지가 영역을 벗어나지 않게 */
+    width: 100%; 
+    height: auto;
+    /* 만약 로고가 검정색이라 안 보이면 아래 필터 사용 (흰색으로 반전) */
+    /* filter: invert(1) brightness(2); */ 
+}
         
         .nav-links a { margin-left: 30px; font-size: 0.95rem; font-weight: 500; color: #ddd; }
         .nav-links a.active { color: #fff; font-weight: 700; }
