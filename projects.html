@@ -153,3 +153,156 @@
             </div>
             
             <div class="modal-body">
+                <div class="iframe-container">
+                    <iframe id="gameFrame" class="game-frame" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
+                </div>
+
+                <div class="detail-info">
+                    <div class="detail-desc">
+                        <h3>Project Overview</h3>
+                        <p id="modalLongDesc">상세 설명이 로딩 중입니다...</p>
+                    </div>
+                    
+                    <div class="detail-desc" id="gallerySection" style="display:none;">
+                        <h3>Gallery</h3>
+                        <div id="modalGallery" class="gallery-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allProjects = [];
+        const modal = document.getElementById('gameModal');
+        const gameFrame = document.getElementById('gameFrame');
+        const modalTitle = document.getElementById('modalTitleDisplay');
+        const modalDesc = document.getElementById('modalLongDesc');
+        const modalGallery = document.getElementById('modalGallery');
+        const gallerySection = document.getElementById('gallerySection');
+
+        function openDetail(index) {
+            const data = allProjects[index];
+            if (!data) return;
+
+            modalTitle.innerText = data['Project Name'];
+            const webglLink = data['WebGL Link'];
+            const videoLink = data['Video Link'];
+
+            if (webglLink && webglLink.trim() !== "") {
+                gameFrame.src = webglLink;
+            } else if (videoLink && videoLink.trim() !== "") {
+                const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+                const match = videoLink.match(regExp);
+                if (match && match[2].length === 11) {
+                    gameFrame.src = `https://www.youtube.com/embed/${match[2]}?autoplay=1`;
+                }
+            } else {
+                gameFrame.src = "";
+            }
+
+            const longDesc = data['Long Description'] || data['Short Description'];
+            modalDesc.innerHTML = longDesc;
+
+            modalGallery.innerHTML = "";
+            const imagesStr = data['Detail Images'];
+            if (imagesStr && imagesStr.trim() !== "") {
+                gallerySection.style.display = "block";
+                const images = imagesStr.split(',');
+                images.forEach(imgUrl => {
+                    const cleanUrl = fixWixImage(imgUrl.trim());
+                    if (cleanUrl) {
+                        const imgTag = document.createElement("img");
+                        imgTag.src = cleanUrl;
+                        imgTag.className = "gallery-item";
+                        imgTag.loading = "lazy";
+                        modalGallery.appendChild(imgTag);
+                    }
+                });
+            } else {
+                gallerySection.style.display = "none";
+            }
+
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function openYoutubePopup(url) {
+            if (!url) return;
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+            const match = url.match(regExp);
+            if (match && match[2].length === 11) {
+                modalTitle.innerText = "Video Preview";
+                gameFrame.src = `https://www.youtube.com/embed/${match[2]}?autoplay=1`;
+                modalDesc.innerHTML = "영상 미리보기 모드입니다.";
+                gallerySection.style.display = "none";
+                modal.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeModal() {
+            modal.classList.remove('show');
+            setTimeout(() => { gameFrame.src = ""; }, 300);
+            document.body.style.overflow = ''; 
+        }
+
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) closeModal();
+        });
+
+        function fixWixImage(url) {
+            if (!url) return "";
+            if (url.includes("wix:image://")) {
+                const match = url.match(/wix:image:\/\/v1\/([^/]+)\//);
+                if (match && match[1]) return `https://static.wixstatic.com/media/${match[1]}`;
+            }
+            if (url.startsWith("http")) return url;
+            return url;
+        }
+
+        Papa.parse("X2R Projects.csv", {
+            download: true, header: true, skipEmptyLines: true,
+            complete: function(results) {
+                allProjects = results.data;
+                const container = document.getElementById('project-container');
+                const countSpan = document.getElementById('project-count');
+                container.innerHTML = '';
+                countSpan.innerText = allProjects.length;
+
+                allProjects.forEach((row, index) => {
+                    const title = row['Project Name'];
+                    const category = (row[' Customers'] || row['Customers'] || "Project").replace(/[\[\]]/g, '').trim(); 
+                    const desc = row['Short Description'];
+                    const image = fixWixImage(row['Title Image']) || "https://via.placeholder.com/400x300";
+                    const videoLink = row['Video Link'];
+                    const hasVideo = videoLink && videoLink.trim() !== "";
+                    const imageAction = hasVideo ? `onclick="openYoutubePopup('${videoLink}')"` : `style="cursor: default;"`;
+                    const webglLink = row['WebGL Link']; 
+                    const hasGame = webglLink && webglLink.trim() !== "";
+                    const animationDelay = (index % 10) * 0.1;
+                    const buttonHTML = `<button onclick="openDetail(${index})" class="card-link">View Detail</button>`;
+
+                    const cardHTML = `
+                        <article class="project-card" style="animation-delay: ${animationDelay}s">
+                            <div class="card-image">
+                                <span class="category-tag">${category}</span>
+                                <a href="javascript:void(0)" ${imageAction} class="card-image-link">
+                                    <img src="${image}" alt="${title}" loading="lazy">
+                                    <div class="play-icon" ${hasVideo ? '' : 'style="display:none;"'}>▶</div>
+                                </a>
+                            </div>
+                            <div class="card-content">
+                                <h3>${title}</h3>
+                                <p>${desc}</p>
+                                ${buttonHTML}
+                            </div>
+                        </article>
+                    `;
+                    container.innerHTML += cardHTML;
+                });
+            }
+        });
+    </script>
+</body>
+</html>
