@@ -161,7 +161,7 @@
             </div>
             
             <div class="modal-body">
-                <div class="iframe-container">
+                <div id="iframeContainer" class="iframe-container">
                     <iframe id="gameFrame" class="game-frame" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
                 </div>
                 <div class="detail-info">
@@ -191,6 +191,11 @@
         const modalDesc = document.getElementById('modalLongDesc');
         const modalGallery = document.getElementById('modalGallery');
         const gallerySection = document.getElementById('gallerySection');
+        const iframeContainer = document.getElementById('iframeContainer');
+
+        // ⚠️ Unity WebGL 빌드(모델링) 미리보기 영역은 나중에 다시 쓸 수 있어서
+        // 로직은 그대로 두고, 일단 화면에서만 숨김 처리 (true로 바꾸면 다시 노출됨)
+        const SHOW_WEBGL_PREVIEW = false;
 
         function openDetail(index) {
             const data = allProjects[index];
@@ -200,15 +205,22 @@
             const webglLink = data['WebGL Link'];
             const videoLink = data['Video Link'];
 
-            if (webglLink && webglLink.trim() !== "") {
+            if (!SHOW_WEBGL_PREVIEW) {
+                // Unity WebGL 모델링 미리보기 숨김 (추후 재사용 예정)
+                iframeContainer.style.display = "none";
+                gameFrame.src = "";
+            } else if (webglLink && webglLink.trim() !== "") {
+                iframeContainer.style.display = "";
                 gameFrame.src = webglLink;
             } else if (videoLink && videoLink.trim() !== "") {
+                iframeContainer.style.display = "";
                 const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
                 const match = videoLink.match(regExp);
                 if (match && match[2].length === 11) {
                     gameFrame.src = `https://www.youtube.com/embed/${match[2]}?autoplay=1`;
                 }
             } else {
+                iframeContainer.style.display = "none";
                 gameFrame.src = "";
             }
 
@@ -266,6 +278,7 @@
             const match = url.match(regExp);
             if (match && match[2].length === 11) {
                 modalTitle.innerText = "Video Preview";
+                iframeContainer.style.display = "";
                 gameFrame.src = `https://www.youtube.com/embed/${match[2]}?autoplay=1`;
                 modalDesc.innerHTML = "영상 미리보기 모드입니다.";
                 gallerySection.style.display = "none";
