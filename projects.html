@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="lang.js"></script>
+    <link rel="alternate" hreflang="ko" href="https://x2r.kr/projects.html">
+    <link rel="alternate" hreflang="en" href="https://x2r.kr/en/projects.html">
+    <link rel="alternate" hreflang="x-default" href="https://x2r.kr/en/projects.html">
     <title>X2R Projects</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <style>
@@ -124,6 +128,16 @@
         }
         
         footer { padding: 60px 0; text-align: center; color: #555; border-top: 1px solid rgba(255,255,255,0.1); }
+    
+        /* 언어 전환 토글 */
+        .nav-links .lang-switch { margin-left: 30px; font-size: 0.85rem; color: #777; white-space: nowrap; }
+        .nav-links .lang-switch a { margin-left: 0; padding: 2px 4px; color: #999; font-weight: 500; }
+        .nav-links .lang-switch a.on { color: #fff; font-weight: 700; }
+        /* 하단 언어 선택 */
+        .footer-lang { margin-top: 18px; font-size: 0.85rem; color: #666; }
+        .footer-lang a { color: #888; margin: 0 6px; text-decoration: none; }
+        .footer-lang a:hover { color: #fff; opacity: 1; }
+        .footer-lang a.on { color: #fff; font-weight: 700; }
     </style>
 </head>
 <body>
@@ -138,7 +152,8 @@
         <nav class="nav-links">
             <a href="index.html">Home</a>
             <a href="history.html">History</a>
-            <a href="projects.html" class="active">Projects</a> 
+            <a href="projects.html" class="active">Projects</a>
+            <span class="lang-switch"><a href="projects.html" data-lang="ko" class="on">KO</a> / <a href="en/projects.html" data-lang="en">EN</a></span>
         </nav>
     </header>
 
@@ -151,7 +166,9 @@
         <div style="text-align:center; width:100%; grid-column: 1/-1; color: #aaa;">Loading Projects...</div>
     </section>
 
-    <footer><p>© 2025 X2R Corp. All Rights Reserved.</p></footer>
+    <footer><p>© 2025 X2R Corp. All Rights Reserved.</p>
+        <div class="footer-lang">&#127760; <a href="projects.html" data-lang="ko" lang="ko" class="on">한국어</a> | <a href="en/projects.html" data-lang="en" lang="en">English</a></div>
+    </footer>
 
     <div id="gameModal" class="game-modal">
         <div class="modal-content">

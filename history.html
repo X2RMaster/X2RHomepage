@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="lang.js"></script>
+    <link rel="alternate" hreflang="ko" href="https://x2r.kr/history.html">
+    <link rel="alternate" hreflang="en" href="https://x2r.kr/en/history.html">
+    <link rel="alternate" hreflang="x-default" href="https://x2r.kr/en/history.html">
     <title>X2R History Timeline</title>
     <style>
         /* =========================================
@@ -126,6 +130,16 @@
         .scroll-show { opacity: 1; transform: translateY(0); }
 
         footer { padding: 60px 0; text-align: center; color: #666; font-size: 0.9rem; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 100px;}
+    
+        /* 언어 전환 토글 */
+        .nav-links .lang-switch { margin-left: 30px; font-size: 0.85rem; color: #777; white-space: nowrap; }
+        .nav-links .lang-switch a { margin-left: 0; padding: 2px 4px; color: #999; font-weight: 500; }
+        .nav-links .lang-switch a.on { color: #fff; font-weight: 700; }
+        /* 하단 언어 선택 */
+        .footer-lang { margin-top: 18px; font-size: 0.85rem; color: #666; }
+        .footer-lang a { color: #888; margin: 0 6px; text-decoration: none; }
+        .footer-lang a:hover { color: #fff; opacity: 1; }
+        .footer-lang a.on { color: #fff; font-weight: 700; }
     </style>
 </head>
 <body>
@@ -151,6 +165,7 @@
             <a href="index.html">Home</a>
             <a href="history.html" class="active">History</a> 
             <a href="projects.html">Projects</a>
+            <span class="lang-switch"><a href="history.html" data-lang="ko" class="on">KO</a> / <a href="en/history.html" data-lang="en">EN</a></span>
         </nav>
     </header>
 
@@ -222,6 +237,7 @@
 
     <footer>
         <p>© 2025 X2R Corp. All Rights Reserved.</p>
+        <div class="footer-lang">&#127760; <a href="history.html" data-lang="ko" lang="ko" class="on">한국어</a> | <a href="en/history.html" data-lang="en" lang="en">English</a></div>
     </footer>
 
     <script>

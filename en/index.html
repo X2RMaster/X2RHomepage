@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../lang.js"></script>
+    <link rel="alternate" hreflang="ko" href="https://x2r.kr/">
+    <link rel="alternate" hreflang="en" href="https://x2r.kr/en/">
+    <link rel="alternate" hreflang="x-default" href="https://x2r.kr/en/">
+    <title>X2R History - Innovation Timeline</title>
+    <meta name="google-site-verification" content="X9pieHI0ttTx1mISrgFCTleFAnaskVWAQmvb9Qb89RM" />
+    <style>
+        /* =========================================
+           1. 기본 설정 (Reset)
+        ========================================= */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        /* [중요] 흰 화면 깜빡임 방지용 검은색 밑바탕 */
+        html { background-color: #000; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Segoe UI", Roboto, sans-serif;
+            color: #ffffff;
+            overflow-x: hidden;
+            background-color: transparent; /* 배경 투명화 (뒤에 영상 보이게) */
+            line-height: 1.6;
+        }
+        
+        a { text-decoration: none; color: inherit; transition: opacity 0.3s; }
+        a:hover { opacity: 0.7; }
+        
+        /* =========================================
+           2. 배경 동영상 설정 (수정됨)
+        ========================================= */
+        .video-background {
+            position: fixed; /* [중요] 스크롤 내려도 배경은 가만히 있도록 'fixed' 사용 */
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1; 
+            pointer-events: none; /* 클릭 방지 */
+            overflow: hidden;
+            background: #000;
+        }
+
+        /* 유튜브 화면 꽉 차게 맞추기 */
+        .video-background iframe {
+            width: 100vw;
+            height: 56.25vw; /* 16:9 비율 */
+            min-height: 100vh;
+            min-width: 177.77vh; 
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        /* 영상 위에 까만 막 씌우기 (글씨 잘 보이게) */
+        .overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6); 
+            z-index: 0;
+        }
+
+        /* =========================================
+           3. 레이아웃 & 디자인
+        ========================================= */
+        .container {
+            max-width: 1200px; margin: 0 auto; padding: 0 20px;
+            position: relative;
+        }
+
+        /* 헤더 */
+        header {
+            position: fixed; top: 0; width: 100%; z-index: 100;
+            padding: 20px 40px; display: flex; justify-content: space-between; align-items: center;
+            backdrop-filter: blur(8px);
+            background: rgba(0,0,0,0.3);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+       .logo {
+    display: flex;
+    align-items: center;
+    /* 로고 영역의 최대 너비 제한 (필요하면 조절하세요) */
+    max-width: 150px; 
+    height: auto;
+}
+
+.logo img {
+    /* 이미지가 영역을 벗어나지 않게 */
+    width: 100%; 
+    height: auto;
+    /* 만약 로고가 검정색이라 안 보이면 아래 필터 사용 (흰색으로 반전) */
+    /* filter: invert(1) brightness(2); */ 
+}
+        
+        .nav-links a { margin-left: 30px; font-size: 0.95rem; font-weight: 500; color: #ddd; }
+        .nav-links a.active { color: #fff; font-weight: 700; }
+
+        /* 히어로 섹션 (타이틀) */
+        .hero-section {
+            height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; padding-top: 60px;
+            text-align: left; /* 왼쪽 정렬 복구 */
+        }
+
+        .year-label {
+            display: inline-block;
+            font-size: 1.2rem; font-weight: 700; color: #3b82f6;
+            margin-bottom: 10px; letter-spacing: 2px;
+            animation: slideUp 1s ease-out forwards;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 7vw, 6rem);
+            font-weight: 800; line-height: 1.1; margin-bottom: 20px;
+            letter-spacing: -2px;
+            animation: slideUp 1.2s ease-out 0.2s forwards;
+            opacity: 0;
+        }
+
+        .hero-desc {
+            font-size: 1.3rem; max-width: 650px; color: #ccc; line-height: 1.6;
+            animation: slideUp 1.2s ease-out 0.4s forwards;
+            opacity: 0;
+        }
+
+        /* 콘텐츠 섹션 (연혁) */
+        section.history-block { padding: 120px 0; border-top: 1px solid rgba(255,255,255,0.1); }
+        
+        .grid-layout {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+        }
+        @media (max-width: 900px) { .grid-layout { grid-template-columns: 1fr; gap: 40px; } }
+
+        /* 이미지 컨테이너 */
+        .img-box {
+            width: 100%; height: 450px; border-radius: 24px;
+            overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .img-box img {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .img-box:hover img { transform: scale(1.05); }
+
+        /* 텍스트 박스 */
+        .text-box .year {
+            font-size: 4rem; font-weight: 900; color: transparent;
+            -webkit-text-stroke: 1px rgba(255,255,255,0.3); margin-bottom: 10px;
+            display: block; line-height: 1;
+        }
+        .text-box h2 { font-size: 2.2rem; margin-bottom: 20px; line-height: 1.2; font-weight: 700; }
+        
+        /* 연혁 리스트 스타일 */
+        .history-list { list-style: none; border-left: 2px solid rgba(255,255,255,0.2); padding-left: 20px; }
+        .history-list li { margin-bottom: 15px; font-size: 1.1rem; color: #ccc; position: relative; }
+        .history-list li::before {
+            content: ''; position: absolute; left: -27px; top: 8px;
+            width: 12px; height: 12px; background: #3b82f6; border-radius: 50%;
+        }
+        .history-list li span { display: block; font-size: 0.9rem; color: #777; margin-bottom: 4px; }
+
+        /* =========================================
+           4. 애니메이션
+        ========================================= */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .scroll-hidden {
+            opacity: 0; transform: translateY(60px);
+            transition: all 1s ease-out;
+        }
+        .scroll-show {
+            opacity: 1; transform: translateY(0);
+        }
+
+        /* 하단 푸터 */
+        footer {
+            padding: 80px 0; text-align: center; color: #555; font-size: 0.9rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.8);
+        }
+    
+        /* 언어 전환 토글 */
+        .nav-links .lang-switch { margin-left: 30px; font-size: 0.85rem; color: #777; white-space: nowrap; }
+        .nav-links .lang-switch a { margin-left: 0; padding: 2px 4px; color: #999; font-weight: 500; }
+        .nav-links .lang-switch a.on { color: #fff; font-weight: 700; }
+        /* 하단 언어 선택 */
+        .footer-lang { margin-top: 18px; font-size: 0.85rem; color: #666; }
+        .footer-lang a { color: #888; margin: 0 6px; text-decoration: none; }
+        .footer-lang a:hover { color: #fff; opacity: 1; }
+        .footer-lang a.on { color: #fff; font-weight: 700; }
+    </style>
+</head>
+<body>
+
+    <div class="video-background">
+        <iframe 
+            src="https://www.youtube.com/embed/mwyfdKKhhAk?autoplay=1&mute=1&controls=0&loop=1&playlist=mwyfdKKhhAk&playsinline=1" 
+            title="YouTube video player" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            style="pointer-events: none;" 
+            allowfullscreen>
+        </iframe>
+        <div class="overlay"></div>
+    </div>
+
+    <header>
+        <a href="index.html" class="logo">
+    <img src="../x2rlogo.png" alt="X2R Logo">
+</a>
+        <nav class="nav-links">
+            <a href="index.html">Home</a> 
+            <a href="history.html" class="active">History</a>
+            <a href="projects.html">Projects</a>
+            <span class="lang-switch"><a href="../index.html" data-lang="ko">KO</a> / <a href="index.html" data-lang="en" class="on">EN</a></span>
+        </nav>
+    </header>
+
+    <section class="hero-section container">
+        <span class="year-label">SINCE 2017</span>
+        <h1 class="hero-title">
+            Leading the<br>
+             Digital Twin Era.
+        </h1>
+        <p class="hero-desc">
+            X2R delivers innovative solutions built on advanced technology.<br>
+            From Meta-Human systems to VR content for industrial accident prevention, we turn the future into reality.
+        </p>
+    </section>
+
+    <section class="hero-section container">
+        <h1 class="hero-title">
+            Beyond Reality,<br>
+             Towards the Future.
+        </h1>
+        <p class="hero-desc">
+            X2R opens up a new world with technology that blurs the line between the virtual and the real.<br>
+            Precise data meets hyper-realistic content &mdash; experience the tomorrow you imagined, today at X2R.
+        </p>
+    </section>
+
+    <section class="container history-block">
+        <div class="grid-layout">
+            <div class="img-box scroll-hidden">
+                <img src="../main1.png" alt="2025 History">
+            </div>
+            <div class="text-box scroll-hidden">
+                <span class="year">2025 - 2024</span>
+                <h2>Innovation &<br>Expansion</h2>
+                <ul class="history-list">
+                    <li><span>2025.10</span> Filed a patent for the 'Meta-Human System'</li>
+                    <li><span>2025.09</span> GS certification for Industrial Accident Response Content v1.0</li>
+                    <li><span>2024.12</span> GS certification for Digital Twin-based Metaverse Platform</li>
+                    <li><span>2024.10</span> Filed a patent for a 'Digital Twin Modeling Method'</li>
+                    <li><span>2024.04</span> Established corporate R&D center (Cheongju)</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="container history-block">
+        <div class="grid-layout" style="direction: rtl;"> 
+            <div class="img-box scroll-hidden" style="direction: ltr;">
+                <img src="../main2.JPG" alt="2023 History">
+            </div>
+            <div class="text-box scroll-hidden" style="direction: ltr; text-align: left;">
+                <span class="year">2023 - 2022</span>
+                <h2>Research &<br>Development</h2>
+                <ul class="history-list">
+                    <li><span>2023.10</span> Selected for the Ministry of SMEs and Startups' Startup Growth Technology Development R&D Program</li>
+                    <li><span>2023.08</span> GS certification for Industrial Process Metaverse Platform</li>
+                    <li><span>2022.05</span> Selected for MSIT's AI Convergence Regional Specialized Industry Program</li>
+                    <li><span>2022.02</span> Selected for the Ministry of Education's School Enterprise Program</li>
+                    <li><span>2022.02</span> Selected for MSIT's XR Lab Program</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="container history-block">
+        <div class="grid-layout">
+            <div class="img-box scroll-hidden">
+                <img src="../main3.png" alt="Foundation">
+            </div>
+            <div class="text-box scroll-hidden">
+                <span class="year">2021 - 2018</span>
+                <h2>Foundation &<br>Challenge</h2>
+                <ul class="history-list">
+                    <li><span>2021.04</span> Selected for the Metaverse Lab Program (MSIT/RAPA)</li>
+                    <li><span>2020.10</span> Developed an MR art exhibition experience solution</li>
+                    <li><span>2019.10</span> Exhibited at the VR/AR Content DST EXPO</li>
+                    <li><span>2018.11</span> Exhibited at the Korea Safety Industry Expo</li>
+                    <li><span>2018.09</span> Developed a defense equipment AR app for ROK Army Headquarters</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 X2R Corp. All Rights Reserved.</p>
+        <p style="color: #888; margin-top: 10px; font-size: 0.8rem;">Headquarters: 48-17 Millennium 4-ro, Cheongwon-gu, Cheongju-si, Chungcheongbuk-do, Republic of Korea</p>
+        <div class="footer-lang">&#127760; <a href="../index.html" data-lang="ko" lang="ko">한국어</a> | <a href="index.html" data-lang="en" lang="en" class="on">English</a></div>
+    </footer>
+
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.classList.add('scroll-show');
+                }
+            });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.scroll-hidden').forEach((el) => observer.observe(el));
+    </script>
+
+</body>
+</html>
