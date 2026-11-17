@@ -8,6 +8,7 @@
     <link rel="alternate" hreflang="en" href="https://x2r.kr/en/">
     <link rel="alternate" hreflang="x-default" href="https://x2r.kr/en/">
     <title>X2R History - Innovation Timeline</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <meta name="google-site-verification" content="X9pieHI0ttTx1mISrgFCTleFAnaskVWAQmvb9Qb89RM" />
     <style>
         /* =========================================
@@ -98,7 +99,7 @@
 
         /* 히어로 섹션 (타이틀) */
         .hero-section {
-            height: 100vh; display: flex; flex-direction: column;
+            min-height: 70vh; display: flex; flex-direction: column;
             justify-content: center; padding-top: 60px;
             text-align: left; /* 왼쪽 정렬 복구 */
         }
@@ -197,29 +198,21 @@
 </head>
 <body>
 
-    <div class="video-background">
-        <iframe 
-            src="https://www.youtube.com/embed/mwyfdKKhhAk?autoplay=1&mute=1&controls=0&loop=1&playlist=mwyfdKKhhAk&playsinline=1" 
-            title="YouTube video player" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            style="pointer-events: none;" 
-            allowfullscreen>
-        </iframe>
-        <div class="overlay"></div>
-    </div>
 
     <header>
         <a href="index.html" class="logo">
     <img src="../x2rlogo.png" alt="X2R Logo">
 </a>
         <nav class="nav-links">
-            <a href="index.html">Home</a> 
-            <a href="history.html" class="active">History</a>
+            <a href="index.html" class="active">Home</a> 
+            <a href="history.html">History</a>
             <a href="projects.html">Projects</a>
             <span class="lang-switch"><a href="../index.html" data-lang="ko">KO</a> / <a href="index.html" data-lang="en" class="on">EN</a></span>
         </nav>
     </header>
+
+    <section id="x2r-gallery" class="x2r-gallery" data-csv="projects-en.csv" data-prefix="../" data-link="projects.html" data-lang="en"></section>
+
 
     <section class="hero-section container">
         <span class="year-label">SINCE 2017</span>
@@ -319,5 +312,6 @@
         document.querySelectorAll('.scroll-hidden').forEach((el) => observer.observe(el));
     </script>
 
+    <script src="../gallery.js"></script>
 </body>
 </html>

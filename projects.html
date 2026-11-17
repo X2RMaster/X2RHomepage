@@ -372,6 +372,8 @@
                     `;
                     container.innerHTML += cardHTML;
                 });
+                const m = location.hash.match(/^#p(\d+)$/);
+                if (m && allProjects[+m[1]]) setTimeout(() => openDetail(+m[1]), 300);
             }
         });
     </script>
