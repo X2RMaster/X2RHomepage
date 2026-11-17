@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../lang.js"></script>
+    <script src="../nav.js" defer></script>
+    <link rel="alternate" hreflang="ko" href="https://x2r.kr/about.html">
+    <link rel="alternate" hreflang="en" href="https://x2r.kr/en/about.html">
+    <link rel="alternate" hreflang="x-default" href="https://x2r.kr/en/about.html">
+    <title>About X2R</title>
+    <meta name="description" content="Meet X2R — building tomorrow's industrial sites with technology that connects the virtual and the real.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { background-color: #000; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Segoe UI", Roboto, sans-serif;
+            color: #fff; background: #000; overflow-x: hidden; line-height: 1.6;
+        }
+        a { text-decoration: none; color: inherit; transition: opacity 0.3s; }
+        a:hover { opacity: 0.7; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; position: relative; }
+
+        /* 헤더 */
+        header {
+            position: fixed; top: 0; width: 100%; z-index: 100;
+            padding: 20px 40px; display: flex; justify-content: space-between; align-items: center;
+            backdrop-filter: blur(8px); background: rgba(0,0,0,0.3);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .logo { display: flex; align-items: center; max-width: 150px; height: auto; }
+        .logo img { width: 100%; height: auto; }
+        .nav-links a { margin-left: 30px; font-size: 0.95rem; font-weight: 500; color: #ddd; }
+        .nav-links a.active { color: #fff; font-weight: 700; }
+
+        /* 페이지 타이틀 */
+        .page-header {
+            padding: 190px 0 110px; position: relative;
+            background:
+              radial-gradient(800px 400px at 85% 0%, rgba(59,130,246,0.18), transparent 70%),
+              radial-gradient(600px 300px at 0% 100%, rgba(59,130,246,0.08), transparent 70%);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .page-title { font-size: clamp(2.6rem, 5.5vw, 4.8rem); font-weight: 800; letter-spacing: -2px; line-height: 1.1; margin-bottom: 20px; animation: slideUp 1s ease-out forwards; }
+        .page-desc { font-size: 1.2rem; color: #bbb; max-width: 720px; animation: slideUp 1s ease-out 0.2s forwards; opacity: 0; }
+
+        /* 소개 블록 */
+        section.about-block { padding-top: 120px; padding-bottom: 120px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: center; }
+        .about-grid.reverse .img-box { order: 2; }
+        .img-box {
+            width: 100%; aspect-ratio: 4 / 3; border-radius: 24px; overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1);
+        }
+        .img-box img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94); }
+        .img-box:hover img { transform: scale(1.05); }
+        .text-box .tag { display: inline-block; font-size: 0.8rem; font-weight: 700; letter-spacing: 2px; color: #3b82f6; margin-bottom: 14px; }
+        .text-box h2 { font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 800; line-height: 1.3; letter-spacing: -1px; margin-bottom: 28px; }
+        .text-box p { font-size: 1.05rem; color: #c8c8c8; line-height: 1.9; margin-bottom: 20px; word-break: keep-all; }
+        .text-box p:last-child { margin-bottom: 0; }
+        .intro .text-box h2 { font-size: clamp(2rem, 3.4vw, 2.9rem); }
+
+        /* 숫자 */
+        section.stats { padding: 120px 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .section-title { font-size: 0.85rem; letter-spacing: 3px; color: #888; font-weight: 600; margin-bottom: 40px; text-transform: uppercase; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+        .stat { padding: 36px 28px; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01)); }
+        .stat .num { font-size: clamp(2.6rem, 4vw, 3.6rem); font-weight: 900; line-height: 1; letter-spacing: -2px; color: #fff; }
+        .stat .label { display: block; margin: 14px 0 10px; font-size: 1rem; font-weight: 700; color: #3b82f6; }
+        .stat .sub { font-size: 0.92rem; color: #999; line-height: 1.6; word-break: keep-all; }
+
+        /* 사업장 */
+        section.locations { padding: 120px 0; }
+        .loc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 60px; }
+        .loc { padding: 28px; border-left: 2px solid #3b82f6; background: rgba(255,255,255,0.03); border-radius: 0 16px 16px 0; }
+        .loc h3 { font-size: 1rem; color: #fff; margin-bottom: 10px; }
+        .loc p { color: #aaa; font-size: 0.95rem; word-break: keep-all; }
+        .loc a { color: #fff; border-bottom: 1px solid rgba(255,255,255,0.4); }
+        .cta-row { display: flex; gap: 14px; flex-wrap: wrap; }
+        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 26px; border-radius: 999px; font-weight: 600; font-size: 0.98rem; border: 1px solid rgba(255,255,255,0.35); }
+        .btn.primary { background: #3b82f6; border-color: #3b82f6; }
+        .btn:hover { opacity: 0.85; }
+
+        /* 애니메이션 */
+        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        .scroll-hidden { opacity: 0; transform: translateY(60px); transition: all 1s ease-out; }
+        .scroll-show { opacity: 1; transform: translateY(0); }
+
+        footer { padding: 80px 0; text-align: center; color: #555; font-size: 0.9rem; border-top: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.8); }
+
+        /* 언어 전환 토글 */
+        .nav-links .lang-switch { margin-left: 30px; font-size: 0.85rem; color: #777; white-space: nowrap; }
+        .nav-links .lang-switch a { margin-left: 0; padding: 2px 4px; color: #999; font-weight: 500; }
+        .nav-links .lang-switch a.on { color: #fff; font-weight: 700; }
+        /* 하단 언어 선택 */
+        .footer-lang { margin-top: 18px; font-size: 0.85rem; color: #666; }
+        .footer-lang a { color: #888; margin: 0 6px; text-decoration: none; }
+        .footer-lang a:hover { color: #fff; opacity: 1; }
+        .footer-lang a.on { color: #fff; font-weight: 700; }
+
+        @media (max-width: 900px) {
+            header { padding: 16px 20px; }
+            .nav-links a { margin-left: 16px; }
+            .about-grid { grid-template-columns: 1fr; gap: 36px; }
+            .about-grid.reverse .img-box { order: 0; }
+            section.about-block { padding-top: 80px; padding-bottom: 80px; } section.stats, section.locations { padding: 80px 0; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .loc-grid { grid-template-columns: 1fr; }
+            .page-header { padding: 150px 0 80px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo"><img src="../x2rlogo.png" alt="X2R Logo"></a>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html" class="active">About</a>
+            <a href="history.html">History</a>
+            <a href="projects.html">Projects</a>
+            <span class="lang-switch"><a href="../about.html" data-lang="ko">KO</a> / <a href="about.html" data-lang="en" class="on">EN</a></span>
+        </nav>
+    </header>
+
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">About X2R</h1>
+            <p class="page-desc">Meet X2R — building tomorrow's industrial sites with technology that connects the virtual and the real.</p>
+        </div>
+    </section>
+
+    <section class="container about-block intro">
+        <div class="about-grid">
+            <div class="img-box scroll-hidden">
+                <img src="../images/about/company.jpg" alt="X2R" loading="lazy">
+            </div>
+            <div class="text-box scroll-hidden">
+                <h2>Connecting the virtual and the real<br>to build tomorrow's industry.</h2>
+                <p>X2R is a technology company that uses digital twins, the metaverse and XR (VR·AR·MR) to visualize data in industry and the public sector, bringing real sites into virtual space. Starting with VR and AR content, we have steadily expanded into immersive training content, digital twin platforms and AI humans.</p>
+                <p>With our headquarters and corporate R&D center in Cheongju, Chungcheongbuk-do, and a branch office in Ulsan, we work with government agencies, local governments, public institutions, universities, hospitals and companies on projects in manufacturing, safety, healthcare and education. Built on our GS-certified metaverse platform and core digital twin patents, our goal is technology that is actually used in the field.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="container about-block">
+        <div class="about-grid reverse">
+            <div class="img-box scroll-hidden">
+                <img src="../images/about/digitaltwin.jpg" alt="Digital Twin" loading="lazy">
+            </div>
+            <div class="text-box scroll-hidden">
+                <span class="tag">DIGITAL TWIN · METAVERSE</span>
+                <h2>Digital Twin & Metaverse Platform</h2>
+                <p>X2R develops and operates its own platform that collects sensor and equipment data from the field and displays it in real time in a 3D digital twin space. Our GS-certified Industrial Process Metaverse Platform consists of data collection, a 3D visualization engine and a multi-user server, and applies our patented data-tagging-based multi-mode digital twin system to switch between monitoring views to suit each situation.</p>
+                <p>The platform has been applied in manufacturing, safety and healthcare — from a metaverse factory for an electrical parts plant to Chungcheongbuk-do's industrial disaster safety management and integrated infection control in hospitals — supporting real-time monitoring, AI-based prediction and faster decisions.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="container about-block">
+        <div class="about-grid">
+            <div class="img-box scroll-hidden">
+                <img src="../images/about/xr.jpg" alt="XR Training" loading="lazy">
+            </div>
+            <div class="text-box scroll-hidden">
+                <span class="tag">XR TRAINING</span>
+                <h2>Immersive XR Training Content</h2>
+                <p>For fields where repeated practice is difficult because of expensive equipment or hazardous environments, we develop immersive VR, AR and MR training content. Across secondary battery manufacturing equipment, substations, aircraft engine maintenance, industrial safety and dental radiography, we have created environments where people can practice safely and repeatedly, just as if handling real equipment.</p>
+                <p>With multi-platform development for PC, VR and mobile and integration with learning management systems (LMS), we help training institutions bring content straight into their curricula.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="container about-block">
+        <div class="about-grid reverse">
+            <div class="img-box scroll-hidden">
+                <img src="../images/about/aihuman.jpg" alt="AI Human" loading="lazy">
+            </div>
+            <div class="text-box scroll-hidden">
+                <span class="tag">AI HUMAN · INTERACTIVE</span>
+                <h2>AI Humans & Interactive Content</h2>
+                <p>By combining conversational AI with speech recognition and synthesis, our AI humans create a new kind of guided experience in which people ask questions and get answers as if talking to a person. 'Wontaek', the AI human at the Chungbuk Provincial Government's Geurimchaek Jeongwon 1937, talks with visitors about the building's history and stories, and X2R has filed a patent for its Meta-Human System.</p>
+                <p>We also continue to create interactive content where technology meets culture, including MR art exhibitions, 3D projection mapping and multiplayer VR games.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="container">
+            <h2 class="section-title">X2R in Numbers</h2>
+            <div class="stats-grid">
+                <div class="stat scroll-hidden"><div class="num">2017</div><span class="label">SINCE</span><p class="sub">Our immersive technology journey began with VR and AR content</p></div>
+                <div class="stat scroll-hidden"><div class="num">3</div><span class="label">GS Certifications</span><p class="sub">2 metaverse platforms · 1 industrial accident response content</p></div>
+                <div class="stat scroll-hidden"><div class="num">4</div><span class="label">Patents Filed</span><p class="sub">Including the Meta-Human System and digital twin modeling</p></div>
+                <div class="stat scroll-hidden"><div class="num">50+</div><span class="label">Projects</span><p class="sub">Delivered across manufacturing, safety, healthcare and education</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="locations">
+        <div class="container">
+            <h2 class="section-title">Locations</h2>
+            <div class="loc-grid">
+                <div class="loc scroll-hidden"><h3>Headquarters · R&D Center</h3><p>48-17 Millennium 4-ro, Cheongwon-gu, Cheongju-si, Chungcheongbuk-do, Republic of Korea</p></div>
+                <div class="loc scroll-hidden"><h3>Ulsan Branch</h3><p>Ulsan, Republic of Korea</p></div>
+                <div class="loc scroll-hidden"><h3>Contact</h3><p><a href="mailto:x2rmaster@gmail.com">x2rmaster@gmail.com</a></p></div>
+            </div>
+            <div class="cta-row scroll-hidden">
+                <a class="btn primary" href="projects.html">Explore Projects &rarr;</a>
+                <a class="btn" href="history.html">Our History</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 X2R Corp. All Rights Reserved.</p>
+        <p style="color: #888; margin-top: 10px; font-size: 0.8rem;">Headquarters: 48-17 Millennium 4-ro, Cheongwon-gu, Cheongju-si, Chungcheongbuk-do, Republic of Korea</p>
+        <div class="footer-lang">&#127760; <a href="../about.html" data-lang="ko" lang="ko">한국어</a> | <a href="about.html" data-lang="en" lang="en" class="on">English</a></div>
+    </footer>
+
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('scroll-show'); });
+        }, { threshold: 0.12 });
+        document.querySelectorAll('.scroll-hidden').forEach((el) => observer.observe(el));
+    </script>
+
+</body>
+</html>
